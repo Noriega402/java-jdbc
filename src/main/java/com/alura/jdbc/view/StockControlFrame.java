@@ -23,6 +23,7 @@ import javax.swing.table.DefaultTableModel;
 import com.alura.jdbc.controller.ProductController;
 import com.alura.jdbc.controller.CategoryController;
 import java.sql.SQLException;
+import java.util.HashMap;
 
 /**
  *
@@ -256,11 +257,18 @@ public class StockControlFrame extends JFrame {
             return;
         }
 
-        // TODO
-        var producto = new Object[]{textoNombre.getText(), textoDescripcion.getText(), cantidadInt};
+        // transformar datos de frm en objeto
+        var producto = new HashMap<String, String>();
+        producto.put("name", textoNombre.getText());
+        producto.put("description", textoDescripcion.getText());
+        producto.put("quantity", String.valueOf(cantidadInt));
         var categoria = comboCategoria.getSelectedItem();
 
-        this.productoController.guardar(producto);
+        try {
+            this.productoController.guardar(producto);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
         JOptionPane.showMessageDialog(this, "Registrado con éxito!");
 
