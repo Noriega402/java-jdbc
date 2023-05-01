@@ -193,11 +193,20 @@ public class StockControlFrame extends JFrame {
 
         Optional.ofNullable(modelo.getValueAt(tabla.getSelectedRow(), tabla.getSelectedColumn()))
                 .ifPresentOrElse(fila -> {
-                    Integer id = (Integer) modelo.getValueAt(tabla.getSelectedRow(), 0);
+                    Integer id = Integer.valueOf(modelo.getValueAt(tabla.getSelectedRow(), 0).toString());
                     String nombre = (String) modelo.getValueAt(tabla.getSelectedRow(), 1);
                     String descripcion = (String) modelo.getValueAt(tabla.getSelectedRow(), 2);
+                    Integer cantidad = Integer.valueOf(modelo.getValueAt(tabla.getSelectedRow(), 3).toString());
+                    int updatedRows;
 
-                    this.productoController.modificar(nombre, descripcion, id);
+                    try {
+                        updatedRows = this.productoController.modificar(nombre, descripcion, cantidad, id);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                        //System.out.println(e.getMessage());
+                    }
+                    JOptionPane.showMessageDialog(this, "Item actualizado con éxito!");
+
                 }, () -> JOptionPane.showMessageDialog(this, "Por favor, elije un item"));
     }
 
@@ -209,13 +218,18 @@ public class StockControlFrame extends JFrame {
 
         Optional.ofNullable(modelo.getValueAt(tabla.getSelectedRow(), tabla.getSelectedColumn()))
                 .ifPresentOrElse(fila -> {
-                    Integer id = (Integer) modelo.getValueAt(tabla.getSelectedRow(), 0);
+                    Integer id = Integer.valueOf(modelo.getValueAt(tabla.getSelectedRow(), 0).toString());
+                    int deletedRows;
 
-                    this.productoController.eliminar(id);
+                    try {
+                        deletedRows = this.productoController.eliminar(id);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
 
                     modelo.removeRow(tabla.getSelectedRow());
 
-                    JOptionPane.showMessageDialog(this, "Item eliminado con éxito!");
+                    JOptionPane.showMessageDialog(this, deletedRows + " items eliminados con éxito!");
                 }, () -> JOptionPane.showMessageDialog(this, "Por favor, elije un item"));
     }
 
@@ -226,12 +240,12 @@ public class StockControlFrame extends JFrame {
             try {
                 // 
                 productos.forEach(producto -> modelo.addRow(new Object[]{
-                            producto.get("id"),
-                            producto.get("name"),
-                            producto.get("description"),
-                            producto.get("quantity")
-                        }
-                    )
+                    producto.get("id"),
+                    producto.get("name"),
+                    producto.get("description"),
+                    producto.get("quantity")
+                }
+                )
                 );
             } catch (Exception e) {
                 throw e;

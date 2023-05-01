@@ -20,12 +20,28 @@ import java.util.Map;
  */
 public class ProductController {
 
-    public void modificar(String nombre, String descripcion, Integer id) {
-        // TODO
+    public int modificar(String nombre, String descripcion, Integer cantidad, Integer id) throws SQLException{
+        Connection con = new ConnectionFactory().recuperarConexion();
+        Statement stm = con.createStatement();
+        stm.execute("UPDATE products SET name = '" + nombre + "',"
+                + "description = '" + descripcion + "',"
+                + "quantity = " + cantidad + " "
+                + "WHERE id = " + id
+        );
+        int updates = stm.getUpdateCount();
+        con.close();
+
+        return updates;
     }
 
-    public void eliminar(Integer id) {
-        // TODO
+    public int eliminar(Integer id) throws SQLException {
+        Connection con = new ConnectionFactory().recuperarConexion();
+        Statement stm = con.createStatement();
+        stm.execute("DELETE FROM products WHERE id = " + id);
+        int deletes = stm.getUpdateCount(); // devuelve el numero de filas que fueron modificadas
+        con.close();
+
+        return deletes;
     }
 
     public List<Map<String, String>> listar() throws SQLException {
@@ -51,11 +67,8 @@ public class ProductController {
     }
 
     public void guardar(Map<String, String> producto) throws SQLException {
-        // TODO
         Connection con = new ConnectionFactory().recuperarConexion();
-
         Statement stm = con.createStatement();
-
         stm.execute("INSERT INTO products(name,description, quantity)"
                 + "VALUES('" + producto.get("name") + "' ,"
                 + "'" + producto.get("description") + "' ,"
@@ -63,7 +76,7 @@ public class ProductController {
                 Statement.RETURN_GENERATED_KEYS // para recuperar el valor del ID creado
         );
         
-        ResultSet resultSet = stm.getGeneratedKeys();
+        ResultSet resultSet = stm.getGeneratedKeys(); // tomar el nuevo ID del producto ingresado
         
         while(resultSet.next()){
             System.out.println(
