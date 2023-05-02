@@ -4,7 +4,7 @@
     <groupId>com.alura</groupId>
     <artifactId>control-de-stock</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>Proeycto para trabajar con bases de datos JDBC</name>
+    <name>Proyecto para trabajar con bases de datos JDBC</name>
     <packaging>jar</packaging>
     <properties>
         <java.version>11</java.version>
