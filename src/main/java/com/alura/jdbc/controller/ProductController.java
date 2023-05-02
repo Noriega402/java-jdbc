@@ -6,6 +6,7 @@ package com.alura.jdbc.controller;
 
 import com.alura.jdbc.factory.ConnectionFactory;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -22,12 +23,19 @@ public class ProductController {
 
     public int modificar(String nombre, String descripcion, Integer cantidad, Integer id) throws SQLException{
         Connection con = new ConnectionFactory().recuperarConexion();
-        Statement stm = con.createStatement();
-        stm.execute("UPDATE products SET name = '" + nombre + "',"
-                + "description = '" + descripcion + "',"
-                + "quantity = " + cantidad + " "
-                + "WHERE id = " + id
-        );
+        
+        String query = "UPDATE products SET name = ?,"
+                + "description = ?,"
+                + "quantity = ?"
+                + "WHERE id = ?";
+        
+        
+        PreparedStatement stm = con.prepareStatement(query);
+        stm.setString(1, nombre);
+        stm.setString(2, descripcion);
+        stm.setInt(3, cantidad);
+        stm.setInt(4, id);
+        stm.execute();
         int updates = stm.getUpdateCount();
         con.close();
 
@@ -36,8 +44,11 @@ public class ProductController {
 
     public int eliminar(Integer id) throws SQLException {
         Connection con = new ConnectionFactory().recuperarConexion();
-        Statement stm = con.createStatement();
-        stm.execute("DELETE FROM products WHERE id = " + id);
+        String query = "DELETE FROM products WHERE id = ?";
+
+        PreparedStatement stm = con.prepareStatement(query);
+        stm.setInt(1, id);
+        stm.execute();
         int deletes = stm.getUpdateCount(); // devuelve el numero de filas que fueron modificadas
         con.close();
 
@@ -46,8 +57,10 @@ public class ProductController {
 
     public List<Map<String, String>> listar() throws SQLException {
         Connection con = new ConnectionFactory().recuperarConexion(); //agregar conexion a la DB
-        Statement stm = con.createStatement();
-        stm.execute("SELECT *FROM products");
+        String query = "SELECT *FROM products";
+
+        PreparedStatement stm = con.prepareStatement(query);
+        stm.execute();
 
         ResultSet resultSet = stm.getResultSet();
 
@@ -68,13 +81,15 @@ public class ProductController {
 
     public void guardar(Map<String, String> producto) throws SQLException {
         Connection con = new ConnectionFactory().recuperarConexion();
-        Statement stm = con.createStatement();
-        stm.execute("INSERT INTO products(name,description, quantity)"
-                + "VALUES('" + producto.get("name") + "' ,"
-                + "'" + producto.get("description") + "' ,"
-                + producto.get("quantity") + ")",
-                Statement.RETURN_GENERATED_KEYS // para recuperar el valor del ID creado
-        );
+        
+        String query = "INSERT INTO products(name,description, quantity) VALUES(?,?,?)";
+        PreparedStatement stm = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+        // RETURN_GENERATED_KEYS -> retorna el ultimo ID del producto insertado en la DB
+        
+        stm.setString(1, producto.get("name"));
+        stm.setString(2, producto.get("description"));
+        stm.setInt(3, Integer.parseInt(producto.get("quantity")));
+        stm.execute();
         
         ResultSet resultSet = stm.getGeneratedKeys(); // tomar el nuevo ID del producto ingresado
         
