@@ -27,6 +27,7 @@ public class ConnectionFactory {
         pooledDataSource.setJdbcUrl(dataConnection[0]);
         pooledDataSource.setUser(dataConnection[1]);
         pooledDataSource.setPassword(dataConnection[2]);
+        pooledDataSource.setMaxPoolSize(10); // numero MAx de conexiones
         this.datasoruce = pooledDataSource;
     }
     
