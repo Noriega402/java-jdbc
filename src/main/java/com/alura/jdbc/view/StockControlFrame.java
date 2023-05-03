@@ -22,6 +22,7 @@ import javax.swing.table.DefaultTableModel;
 
 import com.alura.jdbc.controller.ProductController;
 import com.alura.jdbc.controller.CategoryController;
+import com.alura.jdbc.model.Product;
 import java.sql.SQLException;
 import java.util.HashMap;
 
@@ -238,7 +239,6 @@ public class StockControlFrame extends JFrame {
             var productos = this.productoController.listar();
 
             try {
-                // 
                 productos.forEach(producto -> modelo.addRow(new Object[]{
                     producto.get("id"),
                     producto.get("name"),
@@ -272,10 +272,11 @@ public class StockControlFrame extends JFrame {
         }
 
         // transformar datos de frm en objeto
-        var producto = new HashMap<String, String>();
-        producto.put("name", textoNombre.getText());
-        producto.put("description", textoDescripcion.getText());
-        producto.put("quantity", String.valueOf(cantidadInt));
+        var producto = new Product(
+                textoNombre.getText(),
+                textoDescripcion.getText(),
+                cantidadInt
+        );
         var categoria = comboCategoria.getSelectedItem();
 
         try {

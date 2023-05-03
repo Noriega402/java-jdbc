@@ -5,6 +5,7 @@
 package com.alura.jdbc.controller;
 
 import com.alura.jdbc.factory.ConnectionFactory;
+import com.alura.jdbc.model.Product;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -81,13 +82,13 @@ public class ProductController {
         }
     }
 
-    public void guardar(Map<String, String> producto) throws SQLException {
+    public void guardar(Product producto) throws SQLException {
         final Connection con = new ConnectionFactory().recuperarConexion();
         con.setAutoCommit(false); // nosotros controlamos la trasaccion de las consultas
 
-        String name = producto.get("name");
-        String description = producto.get("description");
-        Integer quantity = Integer.valueOf(producto.get("quantity"));
+        String name = producto.getName();
+        String description = producto.getDescription();
+        Integer quantity = producto.getQuantity();
         Integer quantityMax = 100;
 
         String query = "INSERT INTO products(name,description, quantity) VALUES(?,?,?)";
@@ -96,31 +97,27 @@ public class ProductController {
 
         try (con) {
             try (stm) {
-                do {
-                    int cantidadParaGuardar = Math.min(quantity, quantityMax);
-                    ejecutarRegistro(name, description, cantidadParaGuardar, stm);
-                    quantity -= quantityMax;
-                } while (quantity > 0);
+                ejecutarRegistro(producto, stm);
+                con.commit(); // realizar la transaccion correctamente
             }
-
-            con.commit(); // realizar la transaccion correctamente
         } catch (Exception e) {
             con.rollback();
             System.out.println("Ocurrio un error en la transaccion, haciendo un rollback");
         }
     }
 
-    public void ejecutarRegistro(String name, String description, Integer quantity, PreparedStatement stm) throws SQLException {
-        stm.setString(1, name);
-        stm.setString(2, description);
-        stm.setInt(3, quantity);
+    public void ejecutarRegistro(Product producto, PreparedStatement stm) throws SQLException {
+        stm.setString(1, producto.getName());
+        stm.setString(2, producto.getDescription());
+        stm.setInt(3, producto.getQuantity());
         stm.execute();
 
         final ResultSet resultSet = stm.getGeneratedKeys(); // tomar el nuevo ID del producto ingresado
         try (resultSet) {
             while (resultSet.next()) {
+                producto.setId(resultSet.getInt(1));
                 System.out.println(
-                        String.format("Fue insertado el producto con ID %d", resultSet.getInt(1))
+                        String.format("Fue insertado el producto con ID %s", producto)
                 );
                 resultSet.getInt(1);
             }
