@@ -66,7 +66,7 @@ public class ProductController {
             try (stm) {
                 stm.execute();
                 final ResultSet resultSet = stm.getResultSet();
-
+                
                 List<Map<String, String>> resultado = new ArrayList<>();
                 while (resultSet.next()) {
                     Map<String, String> row = new HashMap<>();
@@ -85,11 +85,6 @@ public class ProductController {
     public void guardar(Product producto) throws SQLException {
         final Connection con = new ConnectionFactory().recuperarConexion();
         con.setAutoCommit(false); // nosotros controlamos la trasaccion de las consultas
-
-        String name = producto.getName();
-        String description = producto.getDescription();
-        Integer quantity = producto.getQuantity();
-        Integer quantityMax = 100;
 
         String query = "INSERT INTO products(name,description, quantity) VALUES(?,?,?)";
         final PreparedStatement stm = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
