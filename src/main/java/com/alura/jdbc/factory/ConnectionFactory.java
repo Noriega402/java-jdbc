@@ -6,7 +6,6 @@ package com.alura.jdbc.factory;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import javax.sql.DataSource;
 
@@ -27,11 +26,15 @@ public class ConnectionFactory {
         pooledDataSource.setJdbcUrl(dataConnection[0]);
         pooledDataSource.setUser(dataConnection[1]);
         pooledDataSource.setPassword(dataConnection[2]);
-        pooledDataSource.setMaxPoolSize(10); // numero MAx de conexiones
+        pooledDataSource.setMaxPoolSize(10); // numero MAX de conexiones
         this.datasoruce = pooledDataSource;
     }
     
-    public Connection recuperarConexion() throws SQLException{
-        return this.datasoruce.getConnection();
+    public Connection recuperarConexion(){
+        try {
+            return this.datasoruce.getConnection();
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 }
