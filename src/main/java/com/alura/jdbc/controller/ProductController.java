@@ -30,8 +30,9 @@ public class ProductController {
         return productDAO.listar();
     }
 
-    public void guardar(Product producto){
+    public void guardar(Product producto, Integer categoriaId){
        ProductDAO productDAO = new ProductDAO(new ConnectionFactory().recuperarConexion());
+       producto.setCategoryId(categoriaId);
        productDAO.guardar(producto);
     }
 }

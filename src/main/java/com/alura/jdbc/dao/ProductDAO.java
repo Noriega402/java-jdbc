@@ -26,7 +26,7 @@ public class ProductDAO {
     }
 
     public void guardar(Product producto) {
-        String query = "INSERT INTO products(name,description, quantity) VALUES(?,?,?)";
+        String query = "INSERT INTO products(name,description, quantity, category_id) VALUES(?,?,?,?)";
         try (con) {
             PreparedStatement stm = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             // RETURN_GENERATED_KEYS -> retorna el ultimo ID del producto insertado en la DB
@@ -43,6 +43,7 @@ public class ProductDAO {
             stm.setString(1, producto.getName());
             stm.setString(2, producto.getDescription());
             stm.setInt(3, producto.getQuantity());
+            stm.setInt(4, producto.getCategoryId());
             stm.execute();
 
             final ResultSet resultSet = stm.getGeneratedKeys(); // tomar el nuevo ID del producto ingresado

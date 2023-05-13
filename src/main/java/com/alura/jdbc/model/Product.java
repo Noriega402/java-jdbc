@@ -13,6 +13,7 @@ public class Product {
     private String name;
     private String description;
     private Integer quantity;
+    private Integer categoryId;
 
     public Product(Integer id, String name, String description, Integer quantity) {
         this.id = id;
@@ -39,6 +40,14 @@ public class Product {
         return name;
     }
 
+     public Integer getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Integer category) {
+        this.categoryId = category;
+    }
+    
     public void setName(String name) {
         this.name = name;
     }

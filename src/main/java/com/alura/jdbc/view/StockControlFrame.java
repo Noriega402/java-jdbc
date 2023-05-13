@@ -22,8 +22,8 @@ import javax.swing.table.DefaultTableModel;
 
 import com.alura.jdbc.controller.ProductController;
 import com.alura.jdbc.controller.CategoryController;
+import com.alura.jdbc.model.Category;
 import com.alura.jdbc.model.Product;
-import java.sql.SQLException;
 
 /**
  *
@@ -35,7 +35,7 @@ public class StockControlFrame extends JFrame {
 
     private JLabel labelNombre, labelDescripcion, labelCantidad, labelCategoria;
     private JTextField textoNombre, textoDescripcion, textoCantidad;
-    private JComboBox<Object> comboCategoria;
+    private JComboBox<Category> comboCategoria;
     private JButton botonGuardar, botonModificar, botonLimpiar, botonEliminar, botonReporte;
     private JTable tabla;
     private DefaultTableModel modelo;
@@ -107,11 +107,10 @@ public class StockControlFrame extends JFrame {
         textoDescripcion = new JTextField();
         textoCantidad = new JTextField();
         comboCategoria = new JComboBox<>();
-        comboCategoria.addItem("Elige una Categoría");
+        comboCategoria.addItem(new Category(0,"Elige una Categoría"));
 
-        // TODO
         var categorias = this.categoriaController.listar();
-        // categorias.forEach(categoria -> comboCategoria.addItem(categoria));
+        categorias.forEach(categoria -> comboCategoria.addItem(categoria));
 
         textoNombre.setBounds(10, 25, 265, 20);
         textoDescripcion.setBounds(10, 65, 265, 20);
@@ -258,9 +257,10 @@ public class StockControlFrame extends JFrame {
                 textoDescripcion.getText(),
                 cantidadInt
         );
-        var categoria = comboCategoria.getSelectedItem();
 
-        this.productoController.guardar(producto);
+        var categoria = (Category) comboCategoria.getSelectedItem(); //obtiene el valor de la categoria
+
+        this.productoController.guardar(producto, categoria.getId());
 
         JOptionPane.showMessageDialog(this, "Registrado con éxito!");
 
