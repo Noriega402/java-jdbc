@@ -15,7 +15,7 @@ public class Product {
     private Integer quantity;
     private Integer categoryId;
 
-    public Product(Integer id, String name, String description, Integer quantity) {
+    public Product(int id, String name, String description, Integer quantity) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -27,7 +27,12 @@ public class Product {
         this.description = description;
         this.quantity = quantity;
     }
-    
+
+    public Product(String name, Integer quantity) {
+        this.name = name;
+        this.quantity = quantity;
+    }
+
     public Integer getId() {
         return id;
     }

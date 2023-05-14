@@ -7,6 +7,7 @@ package com.alura.jdbc.controller;
 import com.alura.jdbc.factory.ConnectionFactory;
 import com.alura.jdbc.model.Product;
 import com.alura.jdbc.dao.ProductDAO;
+import com.alura.jdbc.model.Category;
 import java.util.List;
 
 /**
@@ -28,6 +29,11 @@ public class ProductController {
     public List<Product> listar(){
         ProductDAO productDAO = new ProductDAO(new ConnectionFactory().recuperarConexion());
         return productDAO.listar();
+    }
+    
+    public List<Product> listar(Category category){
+        ProductDAO productDAO = new ProductDAO(new ConnectionFactory().recuperarConexion());
+        return productDAO.listar(category.getId());
     }
 
     public void guardar(Product producto, Integer categoriaId){

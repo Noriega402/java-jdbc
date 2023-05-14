@@ -4,6 +4,9 @@
  */
 package com.alura.jdbc.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author Daniel Noriega
@@ -11,6 +14,7 @@ package com.alura.jdbc.model;
 public class Category {
     private Integer id;
     private String name;
+    private List<Product> products;
     
     public Category(){
         
@@ -37,9 +41,20 @@ public class Category {
         this.name = name;
     }
     
+    public void agregar(Product product) {
+        if(this.products == null){
+            this.products = new ArrayList<Product>();
+        }
+        
+        this.products.add(product);
+    }
+    
+    public List<Product> getProductos(){
+        return this.products;
+    }
+    
     @Override
     public String toString(){
         return this.name.toString();
     }
-    
 }

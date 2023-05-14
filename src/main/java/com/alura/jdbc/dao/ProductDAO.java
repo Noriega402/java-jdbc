@@ -100,6 +100,33 @@ public class ProductDAO {
             throw new RuntimeException(e);
         }
     }
+    
+    public List<Product> listar(Integer categoryId) {
+        List<Product> resultado = new ArrayList<>();
+        String query = "SELECT *FROM products WHERE category_id = ?";
+        System.out.println(query);
+        try (con) {
+            final PreparedStatement stm = con.prepareStatement(query);
+            try (stm) {
+                stm.setInt(1, categoryId);
+                stm.execute();
+                final ResultSet resultSet = stm.getResultSet();
+
+                while (resultSet.next()) {
+                    Product row = new Product(
+                            resultSet.getInt("id"),
+                            resultSet.getString("name"),
+                            resultSet.getString("description"),
+                            resultSet.getInt("quantity")
+                    );
+                    resultado.add(row);
+                }
+            }
+            return resultado;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public int modificar(String nombre, String descripcion, Integer cantidad, Integer id) {
         try (con) {
